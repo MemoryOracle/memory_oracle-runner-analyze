@@ -3,13 +3,6 @@
 
 import gdb
 # import gdb.types
-import re
-import time
-import graph_tool.all as gt
-
-
-
-
 
 
 class x86_64(object):
