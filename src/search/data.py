@@ -160,11 +160,41 @@ class SpeciesIndex(object):
 
     frame = -1
 
+    _lookup = {
+        gdb.TYPE_CODE_PTR: "Pointer",
+        gdb.TYPE_CODE_ARRAY: "Array",
+        gdb.TYPE_CODE_STRUCT: "Struct",
+        gdb.TYPE_CODE_UNION: "Union",
+        gdb.TYPE_CODE_ENUM: "Enum",
+        gdb.TYPE_CODE_FUNC: "Function",
+        gdb.TYPE_CODE_INT: "Int",
+        gdb.TYPE_CODE_FLT: "Float",
+        gdb.TYPE_CODE_VOID: "Void",
+        gdb.TYPE_CODE_STRING: "String",
+        gdb.TYPE_CODE_ERROR: "TypeDetectionError",
+        gdb.TYPE_CODE_METHOD: "Method",
+        gdb.TYPE_CODE_METHODPTR: "MethodPointer",
+        gdb.TYPE_CODE_MEMBERPTR: "MemberPointer",
+        gdb.TYPE_CODE_REF: "Reference",
+        gdb.TYPE_CODE_CHAR: "Character",
+        gdb.TYPE_CODE_BOOL: "Bool",
+        gdb.TYPE_CODE_COMPLEX: "ComplexFloat",
+        gdb.TYPE_CODE_TYPEDEF: "AliasedAddressable",
+        gdb.TYPE_CODE_NAMESPACE: "Namespace",
+        gdb.TYPE_CODE_INTERNAL_FUNCTION: "DebuggerFunction",
+    }
+
+    knownIndexes = set()
+
     def __init__(self, *args, **kwargs):
         """
         Simply throw an error if someone attempts to init this class.
         """
         raise NotImplementedError("This is a pure static class!")
+
+
+def species_code(obj):
+
 
 def _extract_value(obj, frame=None):
     if isinstance(obj, gdb.Value):
@@ -188,6 +218,13 @@ def _extract_address(obj, frame=None):
     else:
         raise ValueError("invalid obj of type: " + str(type(obj)))
     return int(val) if val is not None else int(unique_addr())
+
+
+class Node(object):
+
+    def __init__(self, obj):
+        self.classification = Node.compute_classification(obj)
+
 
 
 class Memory(object):
@@ -525,15 +562,6 @@ class FunctionFinish(gdb.FinishBreakpoint):
     def stop(self):
         print(self.functionName, " returned with ", str(self.return_value))
         return False
-
-
-def _combine(weight1, weight2):
-    ans = 0
-    if weight1:
-        ans += weight1
-    if weight2:
-        ans += weight2
-    return ans
 
 
 class LocationQueue(object):

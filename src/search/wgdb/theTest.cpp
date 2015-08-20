@@ -76,8 +76,24 @@ unsigned long fib(const unsigned long n) {
    return x;
 }
 
+void stupid_waste(const unsigned long n) {
+   int* a = new int[n];
+}
+
+void really_stupid_waste() {
+   for (int i = 0; i < (1 << 5); ++i) {
+      stupid_waste(i);
+   }
+}
 
 int main(int argc, char *argv[]) {
+   volatile int a = 5;
+   {
+      volatile int a = 14;
+      const int SOME_FAKE_VAL = 302;
+      int* apple = new int[a];
+      apple = new int[a];
+   }
    const int COUNT = 12;
    const int INT_ARRAY = 20;
    SomeStruct* structArray = new SomeStruct[COUNT];
@@ -89,6 +105,9 @@ int main(int argc, char *argv[]) {
    int quantity = 32;
    for (int i = 0; i < quantity; ++i) {
       myVector.push_back(i);
+   }
+   for (int i = 0; i < quantity; ++i) {
+      really_stupid_waste();
    }
    for(int i = 0; i < COUNT; ++i) {
       structArray[i].a = 2;
